@@ -1,0 +1,188 @@
+Address Book Service
+
+########
+# @UC1 #
+########
+MySQL  localhost:33060+ ssl  SQL > create database addressbook_service;                             
+Query OK, 1 row affected (0.0194 sec)
+
+MySQL  localhost:33060+ ssl  SQL > use addressbook_service;
+Default schema set to `addressbook_service`.
+Fetching table and column names from `addressbook_service` for auto-completion... Press ^C to stop.
+
+
+########
+# @UC2 #
+########
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > create table addressbook(
+                                                      -> firstname varchar(50) NOT NULL,
+                                                      -> lastname varchar(50) NOT NULL,
+                                                      -> address varchar(250) NOT NULL,
+                                                      -> city varchar(100) NOT NULL,
+                                                      -> state varchar(100) NOT NULL,
+                                                      -> zip int unsigned NOT NULL,
+                                                      -> phone int NOT NULL,
+                                                      -> email varchar(250) NOT NULL);
+Query OK, 0 rows affected (0.1139 sec)
+
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > desc addressbook;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| firstname | varchar(50)  | NO   |     | NULL    |       |
+| lastname  | varchar(50)  | NO   |     | NULL    |       |
+| address   | varchar(250) | NO   |     | NULL    |       |
+| city      | varchar(100) | NO   |     | NULL    |       |
+| state     | varchar(100) | NO   |     | NULL    |       |
+| zip       | int unsigned | NO   |     | NULL    |       |
+| phone     | int          | NO   |     | NULL    |       |
+| email     | varchar(250) | NO   |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+8 rows in set (0.0112 sec)
+
+
+########
+# @UC3 #
+########
+
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > insert into addressbook  
+						     ->(firstname,lastname,address,city,state,zip,phone,email) values 
+                                                     ->('krishna','lankala','SRN Colony','Mahabubnager','Telangana',509001,999999999,'xyz@gmail.com'), 
+						     ->('Raghava','M','Alind','Hyderabad','Telangana',500019,989898,'rgy@gmaila.com'),
+						     ->('Mahesh','C','XY Colony','Yadgir','Karnataka',400049,38393999,'the@gmail.com'),
+						     ->('Vinod','Itke','LKJ','Gulbarga','Karnatka',900023,9293039,'red@gmail.com');
+Query OK, 4 rows affected (0.0116 sec)
+Records: 4  Duplicates: 0  Warnings: 0
+
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > select * from addressbook;
++-----------+----------+------------+--------------+-----------+--------+-----------+----------------+
+| firstname | lastname | address    | city         | state     | zip    | phone     | email          |
++-----------+----------+------------+--------------+-----------+--------+-----------+----------------+
+| krishna   | lankala  | SRN Colony | Mahabubnager | Telangana | 509001 | 999999999 | xyz@gmail.com  |
+| Raghava   | M        | Alind      | Hyderabad    | Telangana | 500019 |    989898 | rgy@gmaila.com |
+| Mahesh    | C        | XY Colony  | Yadgir       | Karnataka | 400049 |  38393999 | the@gmail.com  |
+| Vinod     | Itke     | LKJ        | Gulbarga     | Karnatka  | 900023 |   9293039 | red@gmail.com  |
++-----------+----------+------------+--------------+-----------+--------+-----------+----------------+
+4 rows in set (0.0006 sec)
+
+
+########
+# @UC4 #
+########
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > update addressbook set lastname = 'Mamidi' where firstname = 'Raghava';
+Query OK, 1 row affected (0.0105 sec)
+
+
+########
+# @UC5 #
+########
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > delete from addressbook where firstname = 'Vinod';
+Query OK, 1 row affected (0.0117 sec)
+
+
+########
+# @UC6 #
+########
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > select * from addressbook where city='Hyderabad';
++-----------+----------+------------+-----------+-----------+--------+----------+------------------+
+| firstname | lastname | address    | city      | state     | zip    | phone    | email            |
++-----------+----------+------------+-----------+-----------+--------+----------+------------------+
+| Raghava   | Mamidi   | Alind      | Hyderabad | Telangana | 500019 |   989898 | rgy@gmaila.com   |
+| Vikas     | Itke     | kondapur   | Hyderabad | Telangana | 500027 | 94049039 | djjd@gmail.com   |
+| Kiran     | C        | Gachibowli | Hyderabad | Telangana | 500904 | 48499485 | hdjjdj@gmail.com |
++-----------+----------+------------+-----------+-----------+--------+----------+------------------+
+
+
+########
+# @UC7 #
+########
+ MySQL  localhost:33060+ ssl  addressbook_service  SQL > select city,count(firstname) from addressbook group by city;
++--------------+------------------+
+| city         | count(firstname) |
++--------------+------------------+
+| Mahabubnager |                1 |
+| Hyderabad    |                3 |
+| Yadgir       |                1 |
++--------------+------------------+
+3 rows in set (0.0005 sec)
+
+ MySQL  localhost:33060+ ssl  addressbook_service  SQL > select state,count(firstname) from addressbook group by state;
++-----------+------------------+
+| state     | count(firstname) |
++-----------+------------------+
+| Telangana |                4 |
+| Karnataka |                1 |
++-----------+------------------+
+
+
+########
+# @UC8 #
+########
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > select firstname,city from addressbook where city='Hyderabad' order by(firstname);
++-----------+-----------+
+| firstname | city      |
++-----------+-----------+
+| Kiran     | Hyderabad |
+| Raghava   | Hyderabad |
+| Vikas     | Hyderabad |
++-----------+-----------+
+
+
+########
+# @UC9 #
+########
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > alter table addressbook add bookname varchar(250);
+Query OK, 0 rows affected (0.1134 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > alter table addressbook add type varchar(50) after lastname;
+Query OK, 0 rows affected (0.0946 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+#########
+# @UC10 #
+#########
+ MySQL  localhost:33060+ ssl  addressbook_service  SQL > select type,count(firstname) from addressbook group by type;
++--------+------------------+
+| type   | count(firstname) |
++--------+------------------+
+| Friend |                3 |
+| Family |                2 |
++--------+------------------+
+2 rows in set (0.0006 sec)
+
+
+#########
+# @UC11 #
+#########
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > insert into addressbook values ('Shailesh','Parepally','Friend','L b Nagar','Hyderabad','Telangana',500079,90008990,'jdiie@gmail.com','A'), ('Mohan','lankala','Family','Pattin','Boston','Massachussets',903030,1475858,'djkdks@gmail.com','A');
+Query OK, 2 rows affected (0.0116 sec)
+
+Records: 2  Duplicates: 0  Warnings: 0
+
+ MySQL  localhost:33060+ ssl  addressbook_service  SQL > select * from addressbook;
++-----------+-----------+--------+------------+--------------+---------------+--------+-----------+------------------+----------+
+| firstname | lastname  | type   | address    | city         | state         | zip    | phone     | email            | bookname |
++-----------+-----------+--------+------------+--------------+---------------+--------+-----------+------------------+----------+
+| krishna   | lankala   | Friend | SRN Colony | Mahabubnager | Telangana     | 509001 | 999999999 | xyz@gmail.com    | A        |
+| Raghava   | Mamidi    | Friend | Alind      | Hyderabad    | Telangana     | 500019 |    989898 | rgy@gmaila.com   | B        |
+| Mahesh    | C         | Friend | XY Colony  | Yadgir       | Karnataka     | 400049 |  38393999 | the@gmail.com    | A        |
+| Vikas     | Itke      | Family | kondapur   | Hyderabad    | Telangana     | 500027 |  94049039 | djjd@gmail.com   | B        |
+| Kiran     | C         | Family | Gachibowli | Hyderabad    | Telangana     | 500904 |  48499485 | hdjjdj@gmail.com | A        |
+| Shailesh  | Parepally | Friend | L b Nagar  | Hyderabad    | Telangana     | 500079 |  90008990 | jdiie@gmail.com  | A        |
+| Mohan     | lankala   | Family | Pattin     | Boston       | Massachussets | 903030 |   1475858 | djkdks@gmail.com | A        |
++-----------+-----------+--------+------------+--------------+---------------+--------+-----------+------------------+----------+
+7 rows in set (0.0078 sec)
+
+
+
+
+
+
+
+
+
+
