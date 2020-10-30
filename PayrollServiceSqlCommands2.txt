@@ -1,0 +1,258 @@
+########
+# @UC8 #
+########
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > alter table employee_payroll add phone_number varchar(250) after name;
+Query OK, 0 rows affected (0.2297 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > alter table employee_payroll add address varchar(250) after phone_number;
+Query OK, 0 rows affected (0.1095 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > alter table employee_payroll add department varchar(150) not null after address;
+Query OK, 0 rows affected (0.0861 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > alter table employee_payroll alter address set default 'TBD';
+Query OK, 0 rows affected (0.0304 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+
+
+########
+# @UC9 #
+########
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > alter table employee_payroll rename column salary to basic_pay;
+Query OK, 0 rows affected (0.0189 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > alter table employee_payroll add deductions Double not null after basic_pay;
+Query OK, 0 rows affected (0.1215 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > alter table employee_payroll add taxable_pay Double not null after deductions;
+Query OK, 0 rows affected (0.1011 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > alter table employee_payroll add tax Double not null after taxable_pay;
+Query OK, 0 rows affected (0.0882 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > alter table employee_payroll add net_pay Double not null after tax;
+
+Query OK, 0 rows affected (0.0966 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+
+#########
+# @UC10 #
+#########
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > update employee_payroll set department = 'Sales' where name='Terisa';
+Query OK, 1 row affected (0.0114 sec)
+
+Rows matched: 1  Changed: 1  Warnings: 0
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > insert into employee_payroll (name,department,gender,basic_pay,deductions,taxable_pay,tax,net_pay,start) values ('Terisa','Marketing','F',3000000.00,1000000.00,2000000.00,500000.00,1500000.00,'2018-01-03');
+Query OK, 1 row affected (0.0103 sec)
+
+#########
+# @UC10 #(2):
+#########   
+MySQL  localhost:33060+ ssl  payroll_service  SQL > create table employee(id int not null primary key, name varchar(150) not null,phone_number varchar(250),address varchar(250),gender char(1));
+Query OK, 0 rows affected (0.1164 sec)
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > alter table employee alter address set default 'TBD';
+Query OK, 0 rows affected (0.0298 sec)
+
+Records: 0  Duplicates: 0  Warnings: 0
+--------------------------------------------------------------------------------------------------
+uc12:
+
+EMPLOYEE TABLE ::
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > desc employee;
++--------------+--------------+------+-----+---------+-------+
+| Field        | Type         | Null | Key | Default | Extra |
++--------------+--------------+------+-----+---------+-------+
+| id           | int          | NO   | PRI | NULL    |       |
+| name         | varchar(150) | NO   |     | NULL    |       |
+| phone_number | varchar(250) | YES  |     | NULL    |       |
+| address      | varchar(250) | YES  |     | TBD     |       |
+| gender       | char(1)      | YES  |     | NULL    |       |
++--------------+--------------+------+-----+---------+-------+
+5 rows in set (0.0143 sec)
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > insert into employee values (1,'Bill','940400493','New York','M'),(2,'Mark','844949030','Boston','M'),(3,'Charlie','090097890','Paris','M'),(4,'Terisa','9484930003','Rio','F');
+Query OK, 4 rows affected (0.0108 sec)
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > select * from employee;
++----+---------+--------------+----------+--------+
+| id | name    | phone_number | address  | gender |
++----+---------+--------------+----------+--------+
+|  1 | Bill    | 940400493    | New York | M      |
+|  2 | Mark    | 844949030    | Boston   | M      |
+|  3 | Charlie | 090097890    | Paris    | M      |
+|  4 | Terisa  | 9484930003   | Rio      | F      |
++----+---------+--------------+----------+--------+
+4 rows in set (0.0006 sec)
+-----------------------------------------------------------------------------------------------
+DEPARTMENT TABLE ::
+
+MySQL  localhost:33060+ ssl  payroll_service  SQL > create table department (emp_id int Not Null,dept_id varchar(250) Not Null,start Date not null,FOREIGN KEY(emp_id) references employee(id));
+Query OK, 0 rows affected (0.1408 sec)
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > desc department;
++---------+--------------+------+-----+---------+-------+
+| Field   | Type         | Null | Key | Default | Extra |
++---------+--------------+------+-----+---------+-------+
+| emp_id  | int          | NO   | MUL | NULL    |       |
+| dept_id | varchar(250) | NO   |     | NULL    |       |
+| start   | date         | NO   |     | NULL    |       |
++---------+--------------+------+-----+---------+-------+
+3 rows in set (0.0107 sec)
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > insert into department values(1,'Sales','2018-01-03'),(2,'Marketing','2019-11-13'),(3,'Sales','2020-05-21'),(4,'Sales','2019-11-13'),(4,'Marketing','2018-01-03');
+Query OK, 5 rows affected (0.0120 sec)
+
+Records: 5  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > select * from department;
++--------+-----------+------------+
+| emp_id | dept_id   | start      |
++--------+-----------+------------+
+|      1 | Sales     | 2018-01-03 |
+|      2 | Marketing | 2019-11-13 |
+|      3 | Sales     | 2020-05-21 |
+|      4 | Sales     | 2019-11-13 |
+|      4 | Marketing | 2018-01-03 |
++--------+-----------+------------+
+5 rows in set (0.0005 sec)
+---------------------------------------------------------------------------
+COMPANY TABLE ::
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > create table company(emp_id int not null, company varchar(250) not null ,Foreign key(emp_id) references employee(id));
+Query OK, 0 rows affected (0.0541 sec)
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > desc company;
++---------+--------------+------+-----+---------+-------+
+| Field   | Type         | Null | Key | Default | Extra |
++---------+--------------+------+-----+---------+-------+
+| emp_id  | int          | NO   | MUL | NULL    |       |
+| company | varchar(250) | NO   |     | NULL    |       |
++---------+--------------+------+-----+---------+-------+
+2 rows in set (0.0225 sec)
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > insert into department values(1,'Sales','2018-01-03'),(2,'Marketing','2019-11-13'),(3,'Sales','2020-05-21'),(4,'Sales','2019-11-13'),(4,'Marketing','2018-01-03');
+Query OK, 5 rows affected (0.0120 sec)
+
+Records: 5  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > select * from department;
++--------+-----------+------------+
+| emp_id | dept_id   | start      |
++--------+-----------+------------+
+|      1 | Sales     | 2018-01-03 |
+|      2 | Marketing | 2019-11-13 |
+|      3 | Sales     | 2020-05-21 |
+|      4 | Sales     | 2019-11-13 |
+|      4 | Marketing | 2018-01-03 |
++--------+-----------+------------+
+5 rows in set (0.0005 sec)
+-----------------------------------------------------------------------------------------
+PAYROLL TABLE ::
+
+MySQL  localhost:33060+ ssl  payroll_service  SQL > create table payroll(emp_id int not null,basic_pay Double not null,deductions Double not null, taxable_pay Double not null,tax Double not null, net_pay Double not null,foreign key(emp_id) references employee(id) );
+Query OK, 0 rows affected (0.0994 sec)
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > desc payroll;
++-------------+--------+------+-----+---------+-------+
+| Field       | Type   | Null | Key | Default | Extra |
++-------------+--------+------+-----+---------+-------+
+| emp_id      | int    | NO   | MUL | NULL    |       |
+| basic_pay   | double | NO   |     | NULL    |       |
+| deductions  | double | NO   |     | NULL    |       |
+| taxable_pay | double | NO   |     | NULL    |       |
+| tax         | double | NO   |     | NULL    |       |
+| net_pay     | double | NO   |     | NULL    |       |
++-------------+--------+------+-----+---------+-------+
+6 rows in set (0.0205 sec)
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > insert into payroll values(4,3000000.00,1000000.00,2000000.00,500000.00,1500000.00),(1,1000000.00,400000.00,600000.00,100000.00,500000.00),(2,2000000.00,700000.00,1300000.00,200000.00,1100000.00),(3,3000000.00,1000000.00,2000000.00,500000.00,1500000.00);
+Query OK, 4 rows affected (0.0155 sec)
+
+Records: 4  Duplicates: 0  Warnings: 0
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > select * from payroll;
++--------+-----------+------------+-------------+--------+---------+
+| emp_id | basic_pay | deductions | taxable_pay | tax    | net_pay |
++--------+-----------+------------+-------------+--------+---------+
+|      4 |   3000000 |    1000000 |     2000000 | 500000 | 1500000 |
+|      1 |   1000000 |     400000 |      600000 | 100000 |  500000 |
+|      2 |   2000000 |     700000 |     1300000 | 200000 | 1100000 |
+|      3 |   3000000 |    1000000 |     2000000 | 500000 | 1500000 |
++--------+-----------+------------+-------------+--------+---------+
+4 rows in set (0.0005 sec)
+-------------------------------------------------------------------------------------------------
+Redo UC5 with new Tables:
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > select name,basic_pay from employee,payroll where employee.id=payroll.emp_id and name='Bill';
++------+-----------+
+| name | basic_pay |
++------+-----------+
+| Bill |   1000000 |
++------+-----------+
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > select name,start from employee,department where employee.id=department.emp_id and department.start between CAST('2018-01-01' AS DATE) and Date(NOW());
++---------+------------+
+| name    | start      |
++---------+------------+
+| Bill    | 2018-01-03 |
+| Mark    | 2019-11-13 |
+| Charlie | 2020-05-21 |
+| Terisa  | 2019-11-13 |
+| Terisa  | 2018-01-03 |
++---------+------------+
+5 rows in set (0.0081 sec)
+1 row in set (0.0006 sec)
+
+Redo UC7 with new Tables:
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > select gender,sum(basic_pay) from employee, payroll where employee.id=payroll.emp_id Group by gender;
++--------+----------------+
+| gender | sum(basic_pay) |
++--------+----------------+
+| M      |        6000000 |
+| F      |        3000000 |
++--------+----------------+
+2 rows in set (0.0012 sec)
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > select gender,avg(basic_pay) from employee, payroll where employee.id=payroll.emp_id Group by gender;
++--------+----------------+
+| gender | avg(basic_pay) |
++--------+----------------+
+| M      |        2000000 |
+| F      |        3000000 |
++--------+----------------+
+2 rows in set (0.0006 sec)
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > select gender,min(basic_pay) from employee, payroll where employee.id=payroll.emp_id Group by gender;
++--------+----------------+
+| gender | min(basic_pay) |
++--------+----------------+
+| M      |        1000000 |
+| F      |        3000000 |
++--------+----------------+
+2 rows in set (0.0006 sec)
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > select gender,max(basic_pay) from employee, payroll where employee.id=payroll.emp_id Group by gender;
++--------+----------------+
+| gender | max(basic_pay) |
++--------+----------------+
+| M      |        3000000 |
+| F      |        3000000 |
++--------+----------------+
+2 rows in set (0.0006 sec)
+
+ MySQL  localhost:33060+ ssl  payroll_service  SQL > select gender,count(basic_pay) from employee, payroll where employee.id=payroll.emp_id Group by gender;
++--------+------------------+
+| gender | count(basic_pay) |
++--------+------------------+
+| M      |                3 |
+| F      |                1 |
++--------+------------------+
+2 rows in set (0.0006 sec)

@@ -1,0 +1,189 @@
+#########
+# @UC12 #
+#########
+UC12 is ER diagram which is submitted as AddressBookERDiagram.png
+
+==================================================================
+
+#########
+# @UC13 #
+#########
+AddressBook After Normalizations::
+
+ZIP TABLE::
+
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > create table zip(zip int unsigned not null primary key, city varchar(100) not null, state varchar(100) not null);
+Query OK, 0 rows affected (0.0627 sec)
+---------------------------------------
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > desc zip;
++-------+--------------+------+-----+---------+-------+
+| Field | Type         | Null | Key | Default | Extra |
++-------+--------------+------+-----+---------+-------+
+| zip   | int unsigned | NO   | PRI | NULL    |       |
+| city  | varchar(100) | NO   |     | NULL    |       |
+| state | varchar(100) | NO   |     | NULL    |       |
++-------+--------------+------+-----+---------+-------+
+3 rows in set (0.0107 sec)
+---------------------------
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > insert into zip values(509001,'Mahabubnagar','Telangana'),(500019,'Hyderabad','Telangana'),(400049,'Yadgir','Karnataka'),(500027,'Hyderabad','Telangana'),(400057,'Gulbarga','Karnataka'),(500079,'Hyderabad','Telangana'),(903030,'Boston','Massachussets');
+Query OK, 7 rows affected (0.0152 sec)
+
+Records: 7  Duplicates: 0  Warnings: 0
+---------------------------------------
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > select * from zip;
++--------+--------------+---------------+
+| zip    | city         | state         |
++--------+--------------+---------------+
+| 400049 | Yadgir       | Karnataka     |
+| 400057 | Gulbarga     | Karnataka     |
+| 500019 | Hyderabad    | Telangana     |
+| 500027 | Hyderabad    | Telangana     |
+| 500079 | Hyderabad    | Telangana     |
+| 509001 | Mahabubnagar | Telangana     |
+| 903030 | Boston       | Massachussets |
++--------+--------------+---------------+
+7 rows in set (0.0005 sec)
+
+------------------------------------------------------------------
+PERSON DETAILS TABLE::
+
+ MySQL  localhost:33060+ ssl  addressbook_service  SQL > desc person_details;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| person_id | int          | NO   | PRI | NULL    |       |
+| firstname | varchar(50)  | NO   |     | NULL    |       |
+| lastname  | varchar(50)  | NO   |     | NULL    |       |
+| address   | varchar(250) | NO   |     | NULL    |       |
+| zip       | int unsigned | NO   | MUL | NULL    |       |
+| phone     | int          | NO   |     | NULL    |       |
+| email     | varchar(250) | NO   |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+7 rows in set (0.0176 sec)
+---------------------------
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > insert into person_details values
+						      ->(1,'Krishna Vamshi','Lankala','Srinivasa Colony',509001,94849483,'xyz@gmail.com'),
+						      ->(2,'Raghava','Mamidi','Alind',500019,4859403,'red@gmail.com'),
+						      ->(3,'Mahesh','Chinta','XY Colony',400049,98595593,'rks@gmai.com'),
+						      ->(4,'Vinod','Itke','SR Nagar',400057,859950384,'dr@gmail.com'),
+						      ->(5,'Vikas','Itke','MSJ Colony',500019,94069440,'irla@gmail.com'),
+						      ->(6,'Krishna Mohan','Lankala','Patting street',903030,14858493,'poiuyt@gmail.com'), 
+						      ->(7,'Kiran','Chinta','Kondapur',500027,97859400,'kdkdk@gmail.com'),
+						      ->(8,'Shailesh','Parepally','Lb Nagar',500079,90858843,'ururu@gmail.com');
+Query OK, 8 rows affected (0.0114 sec)
+
+Records: 8  Duplicates: 0  Warnings: 0
+---------------------------------------
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > select * from person_details;
++-----------+----------------+-----------+------------------+--------+-----------+------------------+
+| person_id | firstname      | lastname  | address          | zip    | phone     | email            |
++-----------+----------------+-----------+------------------+--------+-----------+------------------+
+|         1 | Krishna Vamshi | Lankala   | Srinivasa Colony | 509001 |  94849483 | xyz@gmail.com    |
+|         2 | Raghava        | Mamidi    | Alind            | 500019 |   4859403 | red@gmail.com    |
+|         3 | Mahesh         | Chinta    | XY Colony        | 400049 |  98595593 | rks@gmai.com     |
+|         4 | Vinod          | Itke      | SR Nagar         | 400057 | 859950384 | dr@gmail.com     |
+|         5 | Vikas          | Itke      | MSJ Colony       | 500019 |  94069440 | irla@gmail.com   |
+|         6 | Krishna Mohan  | Lankala   | Patting street   | 903030 |  14858493 | poiuyt@gmail.com |
+|         7 | Kiran          | Chinta    | Kondapur         | 500027 |  97859400 | kdkdk@gmail.com  |
+|         8 | Shailesh       | Parepally | Lb Nagar         | 500079 |  90858843 | ururu@gmail.com  |
++-----------+----------------+-----------+------------------+--------+-----------+------------------+
+8 rows in set (0.0075 sec)
+
+------------------------------------------------------------------
+ADDRESSBOOK SHELF TABLE::
+
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > create table addressbook_shelf(person_id int not null,type varchar(50) not null,bookname varchar(50) not null,foreign key(person_id) references person_details(person_id));
+Query OK, 0 rows affected (0.0835 sec)
+--------------------------------------
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > desc addressbook_shelf;
++-----------+-------------+------+-----+---------+-------+
+| Field     | Type        | Null | Key | Default | Extra |
++-----------+-------------+------+-----+---------+-------+
+| person_id | int         | NO   | MUL | NULL    |       |
+| type      | varchar(50) | NO   |     | NULL    |       |
+| bookname  | varchar(50) | NO   |     | NULL    |       |
++-----------+-------------+------+-----+---------+-------+
+3 rows in set (0.0208 sec)
+
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > insert into addressbook_shelf values
+                             -> (1,'Friend','A'),
+                             -> (2,'Family','A'),
+                             -> (3,'Family','B'),
+                             -> (4,'Friend','B'),
+                             -> (5,'Doctor','A'),
+                             -> (6,'Engineer','B'),
+                             -> (7,'Family','A'),
+                             -> (8,'Doctor','B');
+Query OK, 8 rows affected (0.0154 sec)
+
+Records: 8  Duplicates: 0  Warnings: 0
+---------------------------------------
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > select * from addressbook_shelf;
++-----------+----------+----------+
+| person_id | type     | bookname |
++-----------+----------+----------+
+|         1 | Friend   | A        |
+|         2 | Family   | A        |
+|         3 | Family   | B        |
+|         4 | Friend   | B        |
+|         5 | Doctor   | A        |
+|         6 | Engineer | B        |
+|         7 | Family   | A        |
+|         8 | Doctor   | B        |
++-----------+----------+----------+
+8 rows in set (0.0005 sec)
+
+------------------------------------------------------------------
+Redo After Normalization:
+
+########
+# @UC6 #
+########
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > select firstname,lastname,city from person_details,zip where person_details.zip=zip.zip and city='Hyderabad';
++-----------+-----------+-----------+
+| firstname | lastname  | city      |
++-----------+-----------+-----------+
+| Raghava   | Mamidi    | Hyderabad |
+| Vikas     | Itke      | Hyderabad |
+| Kiran     | Chinta    | Hyderabad |
+| Shailesh  | Parepally | Hyderabad |
++-----------+-----------+-----------+
+4 rows in set (0.0082 sec)
+
+########
+# @UC7 #
+########
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > select city,count(firstname) from person_details,zip where person_details.zip=zip.zip group by city;
++--------------+------------------+
+| city         | count(firstname) |
++--------------+------------------+
+| Yadgir       |                1 |
+| Gulbarga     |                1 |
+| Hyderabad    |                4 |
+| Mahabubnagar |                1 |
+| Boston       |                1 |
++--------------+------------------+
+
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > select state,count(firstname) from person_details,zip where person_details.zip=zip.zip group by state;
++---------------+------------------+
+| state         | count(firstname) |
++---------------+------------------+
+| Karnataka     |                2 |
+| Telangana     |                5 |
+| Massachussets |                1 |
++---------------+------------------+
+3 rows in set (0.0006 sec)
+
+#########
+# @UC10 #
+#########
+MySQL  localhost:33060+ ssl  addressbook_service  SQL > select type,count(firstname) from person_details,addressbook_shelf where person_details.person_id=addressbook_shelf.person_id group by type;
++----------+------------------+
+| type     | count(firstname) |
++----------+------------------+
+| Friend   |                2 |
+| Family   |                3 |
+| Doctor   |                2 |
+| Engineer |                1 |
++----------+------------------+
+4 rows in set (0.0009 sec)
